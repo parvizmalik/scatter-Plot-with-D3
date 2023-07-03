@@ -1,39 +1,38 @@
-// document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
+  d3.json("data.json").then(function (data) {
+    const svg = d3
+      .select("body")
+      .append("svg")
+      .attr("width", 500)
+      .attr("height", 500);
 
-//     d3.json("data.json").then(function(data) {
+    const xScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, (d) => d.x)])
+      .range([50, 450]);
 
-//         const svg = d3.select("body").append("svg")
-//             .attr("width", 500)
-//             .attr("height", 500);
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, (d) => d.y)])
+      .range([450, 50]);
 
-//         const xScale = d3.scaleLinear()
-//             .domain([0, d3.max(data, d => d.x)])
-//             .range([50, 450]);
+    const circles = svg
+      .selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", (d) => xScale(d.x))
+      .attr("cy", (d) => yScale(d.y))
+      .attr("r", 5)
+      .attr("fill", "steelblue");
 
-//         const yScale = d3.scaleLinear()
-//             .domain([0, d3.max(data, d => d.y)])
-//             .range([450, 50]);
+    const xAxis = d3.axisBottom(xScale);
+    svg.append("g").attr("transform", "translate(0, 450)").call(xAxis);
 
-//         const circles = svg.selectAll("circle")
-//             .data(data)
-//             .enter()
-//             .append("circle")
-//             .attr("cx", d => xScale(d.x))
-//             .attr("cy", d => yScale(d.y))
-//             .attr("r", 5)
-//             .attr("fill", "steelblue");
-
-//         const xAxis = d3.axisBottom(xScale);
-//         svg.append("g")
-//             .attr("transform", "translate(0, 450)")
-//             .call(xAxis);
-
-//         const yAxis = d3.axisLeft(yScale);
-//         svg.append("g")
-//             .attr("transform", "translate(50, 0)")
-//             .call(yAxis);
-//     });
-// });
+    const yAxis = d3.axisLeft(yScale);
+    svg.append("g").attr("transform", "translate(50, 0)").call(yAxis);
+  });
+});
 
 // document.addEventListener("DOMContentLoaded", function () {
 //   d3.json("data.json").then(function (data) {
@@ -82,68 +81,65 @@
 //   });
 // });
 
-async function draw() {
-  // Data
-  const dataset = await d3.json("data.json");
+// async function draw() {
+//   // Data
+//   const dataset = await d3.json("data.json");
 
+//   const xAccessor = (d) => d.x;
+//   const yAccessor = (d) => d.y;
 
-  const xAccessor = (d) => d.x;
-  const yAccessor = (d) => d.y;
+//   // Dimensions
+//   let dimensions = {
+//     width: 800,
+//     height: 800,
+//     margin: {
+//       top: 50,
+//       bottom: 50,
+//       left: 50,
+//       right: 50,
+//     },
+//   };
 
-  // Dimensions
-  let dimensions = {
-    width: 800,
-    height: 800,
-    margin: {
-      top: 50,
-      bottom: 50,
-      left: 50,
-      right: 50,
-    },
-  };
+//   dimensions.containerWidth =
+//     dimensions.width - dimensions.margin.left - dimensions.margin.right;
+//   dimensions.containerHeight =
+//     dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
 
-  dimensions.containerWidth =
-    dimensions.width - dimensions.margin.left - dimensions.margin.right;
-  dimensions.containerHeight =
-    dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
+//   // Draw Image
+//   const svg = d3
+//     .select("#chart")
+//     .append("svg")
+//     .attr("width", dimensions.width)
+//     .attr("height", dimensions.height);
 
-  // Draw Image
-  const svg = d3
-    .select("#chart")
-    .append("svg")
-    .attr("width", dimensions.width)
-    .attr("height", dimensions.height);
+//   // Create Container
+//   const container = svg
+//     .append("g")
+//     .attr(
+//       "transform",
+//       `translate(${dimensions.margin.left}, ${dimensions.margin.top})`
+//     );
 
-  // Create Container
-  const container = svg
-    .append("g")
-    .attr(
-      "transform",
-      `translate(${dimensions.margin.left}, ${dimensions.margin.top})`
-    );
+//   // Scales
+//   const xScale = d3
+//     .scaleLinear()
+//     .domain(d3.extent(dataset, xAccessor))
+//     .range([0, dimensions.containerWidth]);
 
-  // Scales
-  const xScale = d3
-    .scaleLinear()
-    .domain(d3.extent(dataset, xAccessor))
-    .range([0, dimensions.containerWidth]);
+//   const yScale = d3
+//     .scaleLinear()
+//     .domain(d3.extent(dataset, yAccessor))
+//     .range([0, dimensions.containerHeight]);
 
-  const yScale = d3
-    .scaleLinear()
-    .domain(d3.extent(dataset, yAccessor))
-    .range([0, dimensions.containerHeight]);
+//   // Draw Circles
+//   container
+//     .selectAll("circle")
+//     .data(dataset)
+//     .join("circle")
+//     .attr("r", 5)
+//     .attr("fill", "red")
+//     .attr("cx", (d) => xAccessor(d))
+//     .attr("cy", (d) => yAccessor(d));
+// }
 
-  // Draw Circles
-  container
-    .selectAll("circle")
-    .data(dataset)
-    .join("circle")
-    .attr("r", 5)
-    .attr("fill", "red")
-    // .attr("cx", (d) => xScale(xAccessor(d)))
-    // .attr("cy", (d) => yScale(yAccessor(d)));
-    .attr("cx", (d) => xAccessor(d))
-    .attr("cy", (d) => yAccessor(d));
-}
-
-draw();
+// draw();
